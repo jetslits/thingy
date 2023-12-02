@@ -244,9 +244,9 @@ LimitNPROC=infinity" > /etc/systemd/system/openvpn-server@server.service.d/disab
 	# Create the PKI, set up the CA and the server and client certificates
 	./easyrsa --batch init-pki
 	./easyrsa --batch build-ca nopass
-	./easyrsa --batch --days=999999999999999 build-server-full server nopass
-	./easyrsa --batch --days=999999999999999 build-client-full "$client" nopass
-	./easyrsa --batch --days=999999999999999 gen-crl
+	./easyrsa --batch --days=3650 build-server-full server nopass
+	./easyrsa --batch --days=3650 build-client-full "$client" nopass
+	./easyrsa --batch --days=3650 gen-crl
 	# Move the stuff we need
 	cp pki/ca.crt pki/private/ca.key pki/issued/server.crt pki/private/server.key pki/crl.pem /etc/openvpn/server
 	# CRL is read with each client connection, while OpenVPN is dropped to nobody
@@ -461,7 +461,7 @@ else
 				client=$(sed 's/[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-]/_/g' <<< "$unsanitized_client")
 			done
 			cd /etc/openvpn/server/easy-rsa/
-			./easyrsa --batch --days=999999999999999 build-client-full "$client" nopass
+			./easyrsa --batch --days=3650 build-client-full "$client" nopass
 			# Generates the custom client.ovpn
 			new_client
 			echo
@@ -495,7 +495,7 @@ else
 			if [[ "$revoke" =~ ^[yY]$ ]]; then
 				cd /etc/openvpn/server/easy-rsa/
 				./easyrsa --batch revoke "$client"
-				./easyrsa --batch --days=999999999999999 gen-crl
+				./easyrsa --batch --days=3650 gen-crl
 				rm -f /etc/openvpn/server/crl.pem
 				cp /etc/openvpn/server/easy-rsa/pki/crl.pem /etc/openvpn/server/crl.pem
 				# CRL is read with each client connection, when OpenVPN is dropped to nobody
